@@ -1,6 +1,6 @@
 # TapBeat
 
-**Coming soon — a free drum pad and beat maker: 16 synthesised pads and a step sequencer. Private
+**A free drum pad and beat maker: 16 synthesised pads and a step sequencer. Private
 and offline.** A free app on [FreeAppStore](https://freeappstore.online), live at
 https://tapbeat.freeappstore.online.
 

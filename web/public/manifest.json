@@ -1,7 +1,7 @@
 {
   "name": "TapBeat",
   "short_name": "TapBeat",
-  "description": "Coming soon — a free drum pad and beat maker: 16 synthesised pads and a step sequencer. Private and offline.",
+  "description": "A free drum pad and beat maker: 16 synthesised pads and a step sequencer. Private and offline.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "any",

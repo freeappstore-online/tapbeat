@@ -2,8 +2,7 @@
 
 TapBeat: a free drum pad and beat maker on FreeAppStore — a 4×4 pad grid with synthesised kits
 (Web Audio, no samples), a 16-step sequencer, live recording and WAV export. Patterns stay on the
-device (localStorage). v1 features are built (freeappstore-online/platform#212); the store
-listing stays "Coming soon" until the separate Deploy ticket launches it.
+device (localStorage). v1 is live (freeappstore-online/platform#212).
 
 - Live: https://tapbeat.freeappstore.online
 - Dev: `pnpm install && pnpm dev`
