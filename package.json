@@ -1,0 +1,15 @@
+{
+  "name": "tapbeat",
+  "private": true,
+  "packageManager": "pnpm@10.30.3",
+  "engines": { "node": ">=22" },
+  "pnpm": { "onlyBuiltDependencies": ["esbuild"] },
+  "repository": { "type": "git", "url": "git+https://github.com/freeappstore-online/tapbeat.git" },
+  "scripts": {
+    "dev": "pnpm --filter @tapbeat/web dev",
+    "build": "pnpm --filter @tapbeat/web build",
+    "preview": "pnpm --filter @tapbeat/web preview",
+    "typecheck": "pnpm --filter @tapbeat/web exec tsc -b",
+    "test": "pnpm --filter @tapbeat/web exec tsc -b"
+  }
+}
