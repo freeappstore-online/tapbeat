@@ -3,7 +3,9 @@ import { initApp } from '@freeappstore/sdk'
 import { BuildInfo, type NavItem, PageHeader, Shell } from '@freeappstore/sdk/ui'
 import { engine, KITS, PAD_NAMES, type KitId } from './audio'
 import { PadGrid } from './pads/PadGrid'
-import { sequencer } from './sequencer'
+import Privacy from './Privacy'
+import { SavesView } from './saves/SavesView'
+import { persistSession, sequencer } from './sequencer'
 import { exportWav } from './sequencer/export'
 import { JamBar } from './sequencer/JamBar'
 import { SequencerView } from './sequencer/SequencerView'
@@ -16,6 +18,8 @@ const fas = initApp({ appId: 'tapbeat' })
 const NAV: NavItem[] = [
   { label: 'Pads', href: '/', title: 'TapBeat' },
   { label: 'Sequencer', href: '/sequencer', title: 'Sequencer — TapBeat' },
+  { label: 'Saves', href: '/saves', title: 'Saves — TapBeat' },
+  { label: 'Privacy', href: '/privacy', title: 'Privacy — TapBeat' },
   { label: 'About', href: '/about', title: 'About — TapBeat' },
 ]
 
@@ -27,7 +31,7 @@ const FEATURES = [
   { name: 'Sequencer', ready: true, what: '16 steps per pad, 60–180 BPM, swing, mute and solo, patterns A and B.' },
   { name: 'Record', ready: true, what: 'Jam live over the loop and keep the take.' },
   { name: 'Export', ready: true, what: 'Download your pattern or recording as a WAV file.' },
-  { name: 'Private', ready: false, what: 'Patterns stay on your device. No account; export a backup any time.' },
+  { name: 'Private', ready: true, what: 'Patterns stay on your device. No account; export a backup any time.' },
 ]
 
 export default function App() {
@@ -49,14 +53,16 @@ export default function App() {
 
   return (
     <Shell app={fas} appName="TapBeat" nav={NAV} onNavigate={navigate}>
-      <div className="screen mx-auto w-full max-w-3xl p-4 sm:p-8">{screen(path)}</div>
+      <div className="screen mx-auto w-full max-w-3xl p-4 sm:p-8">{screen(path, navigate)}</div>
       <BuildInfo />
     </Shell>
   )
 }
 
-function screen(path: string) {
+function screen(path: string, navigate: (href: string) => void) {
   if (path === '/about') return <About />
+  if (path === '/privacy') return <Privacy />
+  if (path === '/saves') return <Saves onPrivacy={() => navigate('/privacy')} />
   if (path === '/sequencer') return <Sequence />
   return <Pads />
 }
@@ -72,6 +78,7 @@ function Pads() {
   const chooseKit = (id: KitId) => {
     engine.setKit(id)
     setKit(id)
+    persistSession()
   }
 
   return (
@@ -125,6 +132,21 @@ function Sequence() {
   )
 }
 
+const currentKit = () => engine.kit.id
+const switchKit = (id: KitId) => {
+  engine.setKit(id)
+  persistSession()
+}
+
+function Saves({ onPrivacy }: { onPrivacy: () => void }) {
+  return (
+    <>
+      <PageHeader title="Saves" description="Your patterns, kept on this device." />
+      <SavesView store={localStorage} sequencer={sequencer} kit={currentKit} setKit={switchKit} onPrivacy={onPrivacy} />
+    </>
+  )
+}
+
 function About() {
   return (
     <>
@@ -135,7 +157,7 @@ function About() {
         browser, so it works offline and nothing you play leaves your device. No account, no ads.
       </p>
       <p className="mt-4 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--panel)] p-4 text-[var(--muted)]">
-        TapBeat is in development. Everything but saving works now; saving patterns is coming soon.
+        TapBeat is in development. Everything in v1 works now: pads, kits, the sequencer, recording, WAV export and saves.
       </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {FEATURES.map((feature) => (

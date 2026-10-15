@@ -173,6 +173,12 @@ export class Sequencer {
     else this.set({ ...this.state, queued: id === pattern ? null : id })
   }
 
+  /** Swaps in a whole state (loading a save). Stops playback first. */
+  replace(next: SeqState) {
+    this.stop()
+    this.set({ ...next, playing: false, recording: false, queued: null })
+  }
+
   toggleStep(pad: number, step: number) {
     this.set(toggleStep(this.state, pad, step))
   }

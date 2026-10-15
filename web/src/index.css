@@ -755,3 +755,66 @@ a:focus-visible {
   .seq-slider input { min-width: 2.5rem; }
   .seq-slider output { min-width: 0; white-space: nowrap; }
 }
+
+/* ---- Saves ---- */
+
+.save-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.save-name {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 1rem; /* 16px: no zoom-on-focus on iOS */
+}
+
+.save-button,
+.quiet-button,
+.saved-item button {
+  min-height: 2.75rem;
+  padding: 0 1rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--panel-strong);
+  color: var(--ink);
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.save-button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.saved-list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.saved-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0.5rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--panel-strong);
+}
+
+.saved-item > div { flex: 1; }
+
+.saved-name {
+  overflow-wrap: anywhere;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.saved-item button { padding: 0 0.875rem; }
