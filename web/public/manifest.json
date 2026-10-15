@@ -1,14 +1,25 @@
 {
-  "name": "tapbeat",
-  "short_name": "tapbeat",
-  "description": "Free tapbeat app — part of FreeAppStore",
+  "name": "TapBeat",
+  "short_name": "TapBeat",
+  "description": "Coming soon — a free drum pad and beat maker: 16 synthesised pads and a step sequencer. Private and offline.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "any",
+  "min_viewport_width": 320,
   "background_color": "#ffffff",
   "theme_color": "#111111",
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
   ]
 }

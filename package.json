@@ -1,10 +1,20 @@
 {
   "name": "tapbeat",
+  "description": "Coming soon — a free drum pad and beat maker: 16 synthesised pads and a step sequencer. Private and offline.",
   "private": true,
   "packageManager": "pnpm@10.30.3",
-  "engines": { "node": ">=22" },
-  "pnpm": { "onlyBuiltDependencies": ["esbuild"] },
-  "repository": { "type": "git", "url": "git+https://github.com/freeappstore-online/tapbeat.git" },
+  "engines": {
+    "node": ">=22"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/freeappstore-online/tapbeat.git"
+  },
   "scripts": {
     "dev": "pnpm --filter @tapbeat/web dev",
     "build": "pnpm --filter @tapbeat/web build",
