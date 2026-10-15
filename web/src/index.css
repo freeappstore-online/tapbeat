@@ -55,6 +55,8 @@
   --accent: #d86f4d;
   --accent-soft: #ffd4bf;
   --accent-deep: #9f4427;
+  /* Text on an accent or pad-colour fill. */
+  --on-accent: #ffffff;
   --sky: #4c97b5;
   --sky-soft: #c6e6f2;
   --sky-deep: #245b73;
@@ -102,6 +104,8 @@
   --accent: #ff9b76;
   --accent-soft: #3b2119;
   --accent-deep: #ffd9cb;
+  /* The dark theme's accent is light, so text on it goes dark. */
+  --on-accent: #1a0f0a;
   --sky: #89cbe5;
   --sky-soft: #122632;
   --sky-deep: #d3f0fb;
@@ -398,7 +402,7 @@ a:focus-visible {
   min-width: 4.5rem;
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .seq-transport .seq-play[aria-pressed='true'] {
@@ -578,7 +582,7 @@ a:focus-visible {
 .seq-step[aria-pressed='true'] {
   border-color: var(--pad-tone);
   background: var(--pad-tone);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .seq-step[data-playhead] {
@@ -624,7 +628,7 @@ a:focus-visible {
   min-width: 4.5rem;
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .jam-bar .seq-play[aria-pressed='true'] {
@@ -726,7 +730,7 @@ a:focus-visible {
 .export-actions .export-go {
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .export-actions .export-go:disabled { opacity: 0.6; }
@@ -791,7 +795,7 @@ a:focus-visible {
 .save-button {
   border-color: var(--accent);
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
 }
 
 .saved-list {
@@ -818,3 +822,13 @@ a:focus-visible {
 }
 
 .saved-item button { padding: 0 0.875rem; }
+
+/* The SDK navbar (logo, menu, A, theme, Sign in) is 3px wider than a 320px
+   screen, and its styles are inline, hence !important. Trims its side
+   padding on the narrowest phones only; remove once the SDK fits 320px. */
+@media (max-width: 340px) {
+  #root header {
+    padding-left: 0.625rem !important;
+    padding-right: 0.625rem !important;
+  }
+}
