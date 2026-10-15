@@ -21,5 +21,8 @@
     "preview": "pnpm --filter @tapbeat/web preview",
     "typecheck": "pnpm --filter @tapbeat/web exec tsc -b",
     "test": "pnpm --filter @tapbeat/web test"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
   }
 }

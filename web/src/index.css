@@ -232,3 +232,140 @@ a:focus-visible {
 /* Shell's text-size preference scales rem-based app typography. */
 :root[data-text='lg'] { font-size: 112.5%; }
 :root[data-text='sm'] { font-size: 87.5%; }
+
+/* ---- Pads ---- */
+
+.kit-picker {
+  display: flex;
+  gap: 0.375rem;
+  margin-bottom: 0.75rem;
+  overflow-x: auto;
+}
+
+.kit-picker button {
+  flex: 1 0 auto;
+  min-height: 2.5rem;
+  padding: 0 0.875rem;
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  background: var(--panel);
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.kit-picker button[aria-checked='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--ink);
+}
+
+/* The grid fills the width and stays square, until the screen is too short:
+   then max-height wins over the aspect ratio and the pads go wide instead,
+   so the whole grid always fits (portrait and landscape). PadGrid measures
+   --pad-top (where the grid starts); --pad-bottom is the screen's padding. */
+.pad-grid {
+  --pad-bottom: 1rem;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-rows: repeat(4, minmax(0, 1fr));
+  gap: clamp(0.375rem, 1.6vmin, 0.75rem);
+  width: 100%;
+  aspect-ratio: 1;
+  max-height: max(10rem, calc(100dvh - var(--pad-top, 12rem) - var(--pad-bottom)));
+  /* No scroll, zoom or double-tap delay on the pads: every touch is a hit. */
+  touch-action: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pad {
+  --pad-tone: var(--accent);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-start;
+  min-width: 0;
+  min-height: 0;
+  padding: clamp(0.375rem, 1.4vmin, 0.75rem);
+  border: 1px solid color-mix(in srgb, var(--pad-tone) 35%, var(--line-strong));
+  border-radius: var(--radius);
+  background: color-mix(in srgb, var(--pad-tone) 10%, var(--panel-strong));
+  color: var(--ink);
+  font-size: clamp(0.6875rem, 2.2vmin, 0.875rem);
+  font-weight: 600;
+  line-height: 1.15;
+  text-align: left;
+  overflow: hidden;
+  touch-action: none;
+}
+
+.pad[data-group='hat'] { --pad-tone: var(--sky); }
+.pad[data-group='perc'] { --pad-tone: var(--mint); }
+.pad[data-group='tone'] { --pad-tone: var(--warning); }
+
+/* The flash is the feedback; the global press-scale would lag behind it. */
+.pad:active { transform: none; }
+
+.pad-key {
+  align-self: flex-end;
+  font-family: inherit;
+  font-size: 0.75em;
+  color: var(--muted);
+  opacity: 0.8;
+}
+
+.pad-hit {
+  animation: pad-flash 140ms ease-out;
+}
+
+@keyframes pad-flash {
+  from {
+    background: var(--pad-tone);
+    border-color: var(--pad-tone);
+    transform: scale(0.96);
+  }
+}
+
+/* Reduced motion: no scale or fade, just a colour change while lit. */
+@media (prefers-reduced-motion: reduce) {
+  .pad-hit {
+    animation: none;
+    background: color-mix(in srgb, var(--pad-tone) 45%, var(--panel-strong));
+    border-color: var(--pad-tone);
+  }
+}
+
+@media (min-width: 640px) {
+  .pad-grid { --pad-bottom: 2rem; }
+}
+
+/* Key hints only where there is a keyboard. */
+@media (hover: none) {
+  .pad-key { display: none; }
+}
+
+/* Landscape phones: every pixel of height goes to the pads. */
+@media (max-height: 500px) {
+  .screen {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+  .pad-grid { --pad-bottom: 0.5rem; }
+
+  /* Visually hidden but still the page heading (and Shell's focus target).
+     clip-path alone hides it; no overflow:hidden, which reads as clipping. */
+  .pads-title {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .kit-picker { margin-bottom: 0.5rem; }
+  .kit-picker button { min-height: 2.25rem; }
+}

@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import { initApp } from '@freeappstore/sdk'
 import { BuildInfo, type NavItem, PageHeader, Shell } from '@freeappstore/sdk/ui'
+import { engine, KITS, PAD_NAMES, type KitId } from './audio'
+import { PadGrid } from './pads/PadGrid'
 
 const fas = initApp({ appId: 'tapbeat' })
 
@@ -12,14 +14,15 @@ const NAV: NavItem[] = [
   { label: 'About', href: '/about', title: 'About — TapBeat' },
 ]
 
-// The features planned for v1 (freeappstore-online/platform#212).
+// The features planned for v1 (freeappstore-online/platform#212); `ready`
+// marks the ones that work today.
 const FEATURES = [
-  { name: 'Pads', what: 'A 4×4 grid that plays the moment you tap, with several fingers at once.' },
-  { name: 'Kits', what: '808-style, acoustic-ish, lo-fi and electro, every sound synthesised.' },
-  { name: 'Sequencer', what: '16 steps per pad, 60–180 BPM, swing, mute and solo, patterns A and B.' },
-  { name: 'Record', what: 'Jam live over the loop and keep the take.' },
-  { name: 'Export', what: 'Download your pattern or recording as a WAV file.' },
-  { name: 'Private', what: 'Patterns stay on your device. No account; export a backup any time.' },
+  { name: 'Pads', ready: true, what: 'A 4×4 grid that plays the moment you tap, with several fingers at once.' },
+  { name: 'Kits', ready: true, what: '808-style, acoustic-ish, lo-fi and electro, every sound synthesised.' },
+  { name: 'Sequencer', ready: false, what: '16 steps per pad, 60–180 BPM, swing, mute and solo, patterns A and B.' },
+  { name: 'Record', ready: false, what: 'Jam live over the loop and keep the take.' },
+  { name: 'Export', ready: false, what: 'Download your pattern or recording as a WAV file.' },
+  { name: 'Private', ready: false, what: 'Patterns stay on your device. No account; export a backup any time.' },
 ]
 
 export default function App() {
@@ -41,28 +44,41 @@ export default function App() {
 
   return (
     <Shell app={fas} appName="TapBeat" nav={NAV} onNavigate={navigate}>
-      <div className="mx-auto w-full max-w-3xl p-4 sm:p-8">{path === '/about' ? <About /> : <Pads />}</div>
+      <div className="screen mx-auto w-full max-w-3xl p-4 sm:p-8">{path === '/about' ? <About /> : <Pads />}</div>
       <BuildInfo />
     </Shell>
   )
 }
 
 function Pads() {
+  const [kit, setKit] = useState<KitId>(engine.kit.id)
+  const play = useCallback((pad: number) => engine.play(pad), [])
+
+  const chooseKit = (id: KitId) => {
+    engine.setKit(id)
+    setKit(id)
+  }
+
   return (
     <>
-      <PageHeader
-        title="TapBeat"
-        description="Coming soon — a free drum pad and beat maker: 16 synthesised pads and a step sequencer. Private and offline."
-      />
-      <ComingSoon />
-      <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-        {FEATURES.map((feature) => (
-          <li key={feature.name} className="rounded-[var(--radius)] border border-[var(--line)] p-4">
-            <p className="font-semibold text-[var(--ink)]">{feature.name}</p>
-            <p className="text-sm text-[var(--muted)]">{feature.what}</p>
-          </li>
+      {/* On short (landscape phone) screens the title is visually hidden to give the pads the room. */}
+      <div className="pads-title">
+        <PageHeader title="TapBeat" />
+      </div>
+      <div role="radiogroup" aria-label="Kit" className="kit-picker">
+        {KITS.map((k) => (
+          <button
+            key={k.id}
+            type="button"
+            role="radio"
+            aria-checked={k.id === kit}
+            onClick={() => chooseKit(k.id)}
+          >
+            {k.name}
+          </button>
         ))}
-      </ul>
+      </div>
+      <PadGrid names={PAD_NAMES} onHit={play} />
     </>
   )
 }
@@ -71,13 +87,25 @@ function About() {
   return (
     <>
       <PageHeader title="About" />
-      <ComingSoon />
-      <p className="mt-4 text-[var(--muted)]">
-        TapBeat will be a free drum pad and beat maker: tap out rhythms on 16 pads, build loops in a
-        step sequencer, and export what you make as a WAV file. Every sound will be synthesised in
-        your browser, so it works offline and nothing you play leaves your device. No account, no
-        ads.
+      <p className="text-[var(--muted)]">
+        TapBeat is a free drum pad and beat maker: tap out rhythms on 16 pads, build loops in a step
+        sequencer, and export what you make as a WAV file. Every sound is synthesised in your
+        browser, so it works offline and nothing you play leaves your device. No account, no ads.
       </p>
+      <p className="mt-4 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--panel)] p-4 text-[var(--muted)]">
+        TapBeat is in development. The pads and kits work now; the rest is coming soon.
+      </p>
+      <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+        {FEATURES.map((feature) => (
+          <li key={feature.name} className="rounded-[var(--radius)] border border-[var(--line)] p-4">
+            <p className="font-semibold text-[var(--ink)]">
+              {feature.name}
+              {!feature.ready && <span className="font-normal text-[var(--muted)]"> · coming soon</span>}
+            </p>
+            <p className="text-sm text-[var(--muted)]">{feature.what}</p>
+          </li>
+        ))}
+      </ul>
       <p className="mt-4 text-[var(--muted)]">
         TapBeat is a free, MIT-licensed app on{' '}
         <a href="https://freeappstore.online" className="underline">
@@ -86,14 +114,5 @@ function About() {
         .
       </p>
     </>
-  )
-}
-
-// Placeholder until the features are built. None of them work yet, so it says so plainly.
-function ComingSoon() {
-  return (
-    <p className="rounded-[var(--radius)] border border-[var(--line)] bg-[var(--panel)] p-4 text-[var(--muted)]">
-      Coming soon. TapBeat is in development; the features below aren't available yet.
-    </p>
   )
 }
