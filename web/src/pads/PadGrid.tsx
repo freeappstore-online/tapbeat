@@ -1,8 +1,9 @@
-import { useEffect, useLayoutEffect, useRef, type MouseEvent, type PointerEvent } from 'react'
+import { useEffect, useRef, type MouseEvent, type PointerEvent } from 'react'
+import { useFitTop } from '../useFitTop'
 import { PAD_KEY_LABELS, padForKey } from './keys'
 
 // Colour groups, by pad index: drums, hats, percussion, then bass and chords.
-const GROUPS = ['drum', 'drum', 'drum', 'hat', 'hat', 'perc', 'perc', 'perc', 'perc', 'perc', 'tone', 'tone', 'tone', 'tone', 'tone', 'tone']
+export const PAD_GROUPS = ['drum', 'drum', 'drum', 'hat', 'hat', 'perc', 'perc', 'perc', 'perc', 'perc', 'tone', 'tone', 'tone', 'tone', 'tone', 'tone']
 
 const FLASH_MS = 140
 const flashTimers = new WeakMap<HTMLElement, number>()
@@ -30,26 +31,10 @@ interface PadGridProps {
  * screen reader activating the button) still play.
  */
 export function PadGrid({ names, onHit }: PadGridProps) {
-  const grid = useRef<HTMLDivElement>(null)
+  // The grid takes exactly the height left in the viewport.
+  const grid = useFitTop<HTMLDivElement>()
   const pads = useRef<(HTMLButtonElement | null)[]>([])
   const onHitRef = useRef(onHit)
-
-  // Tell the CSS where the grid starts so it can take exactly the height left
-  // in the viewport. Re-measured when anything above it (navbar, picker) or
-  // the window changes size.
-  useLayoutEffect(() => {
-    const el = grid.current
-    if (!el) return
-    const measure = () => el.style.setProperty('--pad-top', `${Math.ceil(el.getBoundingClientRect().top + window.scrollY)}px`)
-    measure()
-    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(measure)
-    observer?.observe(document.body)
-    window.addEventListener('resize', measure)
-    return () => {
-      observer?.disconnect()
-      window.removeEventListener('resize', measure)
-    }
-  }, [])
   useEffect(() => {
     onHitRef.current = onHit
   }, [onHit])
@@ -96,7 +81,7 @@ export function PadGrid({ names, onHit }: PadGridProps) {
           }}
           type="button"
           className="pad"
-          data-group={GROUPS[pad]}
+          data-group={PAD_GROUPS[pad]}
           aria-label={PAD_KEY_LABELS[pad] ? `${name} (key ${PAD_KEY_LABELS[pad]})` : name}
           aria-keyshortcuts={PAD_KEY_LABELS[pad]}
           onPointerDown={onPointerDown(pad)}

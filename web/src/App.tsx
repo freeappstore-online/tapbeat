@@ -3,6 +3,8 @@ import { initApp } from '@freeappstore/sdk'
 import { BuildInfo, type NavItem, PageHeader, Shell } from '@freeappstore/sdk/ui'
 import { engine, KITS, PAD_NAMES, type KitId } from './audio'
 import { PadGrid } from './pads/PadGrid'
+import { sequencer } from './sequencer'
+import { SequencerView } from './sequencer/SequencerView'
 
 const fas = initApp({ appId: 'tapbeat' })
 
@@ -11,6 +13,7 @@ const fas = initApp({ appId: 'tapbeat' })
 // tab title on that route.
 const NAV: NavItem[] = [
   { label: 'Pads', href: '/', title: 'TapBeat' },
+  { label: 'Sequencer', href: '/sequencer', title: 'Sequencer — TapBeat' },
   { label: 'About', href: '/about', title: 'About — TapBeat' },
 ]
 
@@ -19,7 +22,7 @@ const NAV: NavItem[] = [
 const FEATURES = [
   { name: 'Pads', ready: true, what: 'A 4×4 grid that plays the moment you tap, with several fingers at once.' },
   { name: 'Kits', ready: true, what: '808-style, acoustic-ish, lo-fi and electro, every sound synthesised.' },
-  { name: 'Sequencer', ready: false, what: '16 steps per pad, 60–180 BPM, swing, mute and solo, patterns A and B.' },
+  { name: 'Sequencer', ready: true, what: '16 steps per pad, 60–180 BPM, swing, mute and solo, patterns A and B.' },
   { name: 'Record', ready: false, what: 'Jam live over the loop and keep the take.' },
   { name: 'Export', ready: false, what: 'Download your pattern or recording as a WAV file.' },
   { name: 'Private', ready: false, what: 'Patterns stay on your device. No account; export a backup any time.' },
@@ -44,10 +47,16 @@ export default function App() {
 
   return (
     <Shell app={fas} appName="TapBeat" nav={NAV} onNavigate={navigate}>
-      <div className="screen mx-auto w-full max-w-3xl p-4 sm:p-8">{path === '/about' ? <About /> : <Pads />}</div>
+      <div className="screen mx-auto w-full max-w-3xl p-4 sm:p-8">{screen(path)}</div>
       <BuildInfo />
     </Shell>
   )
+}
+
+function screen(path: string) {
+  if (path === '/about') return <About />
+  if (path === '/sequencer') return <Sequence />
+  return <Pads />
 }
 
 function Pads() {
@@ -62,7 +71,7 @@ function Pads() {
   return (
     <>
       {/* On short (landscape phone) screens the title is visually hidden to give the pads the room. */}
-      <div className="pads-title">
+      <div className="screen-title">
         <PageHeader title="TapBeat" />
       </div>
       <div role="radiogroup" aria-label="Kit" className="kit-picker">
@@ -83,6 +92,22 @@ function Pads() {
   )
 }
 
+// Stable references, so the playhead loop isn't restarted on every render.
+const playbackTime = () => engine.playbackTime
+const unlockAudio = () => void engine.unlock()
+const audition = (pad: number) => engine.play(pad)
+
+function Sequence() {
+  return (
+    <>
+      <div className="screen-title">
+        <PageHeader title="Sequencer" />
+      </div>
+      <SequencerView sequencer={sequencer} now={playbackTime} onBeforePlay={unlockAudio} audition={audition} />
+    </>
+  )
+}
+
 function About() {
   return (
     <>
@@ -93,7 +118,7 @@ function About() {
         browser, so it works offline and nothing you play leaves your device. No account, no ads.
       </p>
       <p className="mt-4 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--panel)] p-4 text-[var(--muted)]">
-        TapBeat is in development. The pads and kits work now; the rest is coming soon.
+        TapBeat is in development. The pads, kits and sequencer work now; the rest is coming soon.
       </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {FEATURES.map((feature) => (

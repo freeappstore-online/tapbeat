@@ -78,6 +78,18 @@ export class AudioEngine {
     return this.ctx?.currentTime ?? 0
   }
 
+  /**
+   * The context time of the sound coming out of the speakers right now:
+   * currentTime minus the output latency. Use it for visuals (the playhead)
+   * so they line up with what is heard.
+   */
+  get playbackTime(): number {
+    const ctx = this.ctx
+    if (!ctx) return 0
+    const latency = ctx.outputLatency || ctx.baseLatency || 0
+    return Math.max(0, ctx.currentTime - latency)
+  }
+
   get kit(): Kit {
     return this.currentKit
   }

@@ -31,7 +31,7 @@ describe('PadGrid', () => {
   it('tells the CSS where the grid starts so it can fit the viewport', () => {
     setup()
     const grid = screen.getByRole('group', { name: 'Drum pads' })
-    expect(grid.style.getPropertyValue('--pad-top')).toMatch(/^\d+px$/)
+    expect(grid.style.getPropertyValue('--fit-top')).toMatch(/^\d+px$/)
   })
 
   it('plays on pointerdown, before the finger lifts', () => {
