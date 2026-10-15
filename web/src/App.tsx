@@ -4,6 +4,8 @@ import { BuildInfo, type NavItem, PageHeader, Shell } from '@freeappstore/sdk/ui
 import { engine, KITS, PAD_NAMES, type KitId } from './audio'
 import { PadGrid } from './pads/PadGrid'
 import { sequencer } from './sequencer'
+import { exportWav } from './sequencer/export'
+import { JamBar } from './sequencer/JamBar'
 import { SequencerView } from './sequencer/SequencerView'
 
 const fas = initApp({ appId: 'tapbeat' })
@@ -23,8 +25,8 @@ const FEATURES = [
   { name: 'Pads', ready: true, what: 'A 4×4 grid that plays the moment you tap, with several fingers at once.' },
   { name: 'Kits', ready: true, what: '808-style, acoustic-ish, lo-fi and electro, every sound synthesised.' },
   { name: 'Sequencer', ready: true, what: '16 steps per pad, 60–180 BPM, swing, mute and solo, patterns A and B.' },
-  { name: 'Record', ready: false, what: 'Jam live over the loop and keep the take.' },
-  { name: 'Export', ready: false, what: 'Download your pattern or recording as a WAV file.' },
+  { name: 'Record', ready: true, what: 'Jam live over the loop and keep the take.' },
+  { name: 'Export', ready: true, what: 'Download your pattern or recording as a WAV file.' },
   { name: 'Private', ready: false, what: 'Patterns stay on your device. No account; export a backup any time.' },
 ]
 
@@ -61,7 +63,11 @@ function screen(path: string) {
 
 function Pads() {
   const [kit, setKit] = useState<KitId>(engine.kit.id)
-  const play = useCallback((pad: number) => engine.play(pad), [])
+  // Every live hit sounds, and goes into the take while recording.
+  const play = useCallback((pad: number) => {
+    engine.play(pad)
+    sequencer.recordHit(pad)
+  }, [])
 
   const chooseKit = (id: KitId) => {
     engine.setKit(id)
@@ -74,18 +80,21 @@ function Pads() {
       <div className="screen-title">
         <PageHeader title="TapBeat" />
       </div>
-      <div role="radiogroup" aria-label="Kit" className="kit-picker">
-        {KITS.map((k) => (
-          <button
-            key={k.id}
-            type="button"
-            role="radio"
-            aria-checked={k.id === kit}
-            onClick={() => chooseKit(k.id)}
-          >
-            {k.name}
-          </button>
-        ))}
+      <div className="pads-controls">
+        <div role="radiogroup" aria-label="Kit" className="kit-picker">
+          {KITS.map((k) => (
+            <button
+              key={k.id}
+              type="button"
+              role="radio"
+              aria-checked={k.id === kit}
+              onClick={() => chooseKit(k.id)}
+            >
+              {k.name}
+            </button>
+          ))}
+        </div>
+        <JamBar sequencer={sequencer} onBeforePlay={unlockAudio} />
       </div>
       <PadGrid names={PAD_NAMES} onHit={play} />
     </>
@@ -96,6 +105,8 @@ function Pads() {
 const playbackTime = () => engine.playbackTime
 const unlockAudio = () => void engine.unlock()
 const audition = (pad: number) => engine.play(pad)
+const exportCurrent = (bars: number, includeTake: boolean) =>
+  exportWav(sequencer.getState(), engine.kit, bars, includeTake)
 
 function Sequence() {
   return (
@@ -103,7 +114,13 @@ function Sequence() {
       <div className="screen-title">
         <PageHeader title="Sequencer" />
       </div>
-      <SequencerView sequencer={sequencer} now={playbackTime} onBeforePlay={unlockAudio} audition={audition} />
+      <SequencerView
+        sequencer={sequencer}
+        now={playbackTime}
+        onBeforePlay={unlockAudio}
+        audition={audition}
+        onExport={exportCurrent}
+      />
     </>
   )
 }
@@ -118,7 +135,7 @@ function About() {
         browser, so it works offline and nothing you play leaves your device. No account, no ads.
       </p>
       <p className="mt-4 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--panel)] p-4 text-[var(--muted)]">
-        TapBeat is in development. The pads, kits and sequencer work now; the rest is coming soon.
+        TapBeat is in development. Everything but saving works now; saving patterns is coming soon.
       </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {FEATURES.map((feature) => (

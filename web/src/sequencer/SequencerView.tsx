@@ -1,8 +1,10 @@
-import { useEffect, useState, useSyncExternalStore } from 'react'
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react'
 import { PAD_NAMES } from '../audio/kits'
 import { MAX_BPM, MIN_BPM } from '../audio/scheduler'
 import { PAD_GROUPS } from '../pads/PadGrid'
 import { useFitTop } from '../useFitTop'
+import { ExportPanel } from './ExportPanel'
+import { RecordButton } from './JamBar'
 import { hasSteps, PATTERN_IDS, STEPS } from './pattern'
 import type { Sequencer } from './sequencer'
 
@@ -14,6 +16,8 @@ interface SequencerViewProps {
   onBeforePlay?: () => void
   /** Plays a pad once, to hear it when picking it while stopped. */
   audition?: (pad: number) => void
+  /** Renders and downloads a WAV of `bars` bars. */
+  onExport?: (bars: number, includeTake: boolean) => Promise<void>
 }
 
 /** The step under the playhead, polled each frame against the audio clock. */
@@ -37,9 +41,11 @@ function usePlayhead(sequencer: Sequencer, now: () => number, playing: boolean):
  * pad being edited (with mute/solo), and that pad's 16 steps as four beats of
  * four. Both grids fill the height left in the viewport.
  */
-export function SequencerView({ sequencer, now, onBeforePlay, audition }: SequencerViewProps) {
+export function SequencerView({ sequencer, now, onBeforePlay, audition, onExport }: SequencerViewProps) {
   const state = useSyncExternalStore(sequencer.subscribe, sequencer.getState)
   const [track, setTrack] = useState(0)
+  const [exporting, setExporting] = useState(false)
+  const closeExport = useCallback(() => setExporting(false), [])
   const playhead = usePlayhead(sequencer, now, state.playing)
   const body = useFitTop<HTMLDivElement>()
   const grid = state.patterns[state.pattern]
@@ -50,6 +56,11 @@ export function SequencerView({ sequencer, now, onBeforePlay, audition }: Sequen
     if (state.playing) return sequencer.stop()
     onBeforePlay?.()
     sequencer.start()
+  }
+
+  const toggleRecord = () => {
+    if (!state.playing) onBeforePlay?.()
+    sequencer.toggleRecord()
   }
 
   const pickTrack = (pad: number) => {
@@ -63,6 +74,7 @@ export function SequencerView({ sequencer, now, onBeforePlay, audition }: Sequen
         <button type="button" className="seq-play" aria-pressed={state.playing} onClick={togglePlay}>
           {state.playing ? 'Stop' : 'Play'}
         </button>
+        <RecordButton recording={state.recording} onClick={toggleRecord} />
         <div role="radiogroup" aria-label="Pattern" className="seq-patterns">
           {PATTERN_IDS.map((id) => (
             <button
@@ -78,9 +90,19 @@ export function SequencerView({ sequencer, now, onBeforePlay, audition }: Sequen
             </button>
           ))}
         </div>
-        <button type="button" className="seq-clear" onClick={() => sequencer.clear()}>
-          Clear {state.pattern}
+        <button
+          type="button"
+          className="seq-clear"
+          aria-label={`Clear pattern ${state.pattern}`}
+          onClick={() => sequencer.clear()}
+        >
+          Clear
         </button>
+        {onExport && (
+          <button type="button" className="seq-export" onClick={() => setExporting(true)}>
+            Export
+          </button>
+        )}
         <label className="seq-slider">
           <span>Tempo</span>
           <input
@@ -164,6 +186,7 @@ export function SequencerView({ sequencer, now, onBeforePlay, audition }: Sequen
           </div>
         </div>
       </div>
+      {exporting && onExport && <ExportPanel take={state.take} onExport={onExport} onClose={closeExport} />}
     </>
   )
 }

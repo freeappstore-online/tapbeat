@@ -79,7 +79,7 @@ describe('SequencerView', () => {
 
   it('clears the current pattern', () => {
     const { sequencer } = setup()
-    fireEvent.click(screen.getByRole('button', { name: 'Clear A' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Clear pattern A' }))
     expect(sequencer.getState().patterns.A.flat().some(Boolean)).toBe(false)
   })
 

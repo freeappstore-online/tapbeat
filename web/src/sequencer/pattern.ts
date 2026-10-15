@@ -4,6 +4,7 @@
 
 import { PAD_COUNT } from '../audio/kits'
 import { MAX_BPM, MAX_SWING, MIN_BPM } from '../audio/scheduler'
+import type { Take } from './recorder'
 
 export const STEPS = 16
 
@@ -25,6 +26,10 @@ export interface SeqState {
   swing: number
   mute: readonly boolean[]
   solo: readonly boolean[]
+  /** Capturing live pad hits into a new take. */
+  recording: boolean
+  /** The last recorded jam, which loops along with the pattern. */
+  take: Take | null
 }
 
 export function emptyGrid(): Grid {
@@ -49,6 +54,8 @@ export function initialState(): SeqState {
     swing: 0,
     mute: Array<boolean>(PAD_COUNT).fill(false),
     solo: Array<boolean>(PAD_COUNT).fill(false),
+    recording: false,
+    take: null,
   }
 }
 

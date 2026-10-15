@@ -7,5 +7,6 @@ import { Sequencer } from './sequencer'
  */
 export const sequencer = new Sequencer({
   clock: () => engine.currentTime,
+  heard: () => engine.playbackTime,
   play: (pad, time) => engine.play(pad, time),
 })
