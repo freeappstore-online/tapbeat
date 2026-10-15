@@ -20,6 +20,6 @@
     "build": "pnpm --filter @tapbeat/web build",
     "preview": "pnpm --filter @tapbeat/web preview",
     "typecheck": "pnpm --filter @tapbeat/web exec tsc -b",
-    "test": "pnpm --filter @tapbeat/web exec tsc -b"
+    "test": "pnpm --filter @tapbeat/web test"
   }
 }
