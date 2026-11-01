@@ -33,11 +33,11 @@ const plural = (n: number) => `${n} ${n === 1 ? 'pattern' : 'patterns'}`
 
 export function Section({ id, title, children }: { id: string; title: string; children: ReactNode }) {
   return (
-    <section aria-labelledby={id} className="mt-4 rounded-[var(--radius)] border border-[var(--line)] bg-[var(--panel)] p-4">
-      <h2 id={id} className="font-semibold text-[var(--ink)]">
+    <section aria-labelledby={id} className="mt-4 rounded-fas border border-line bg-panel p-4">
+      <h2 id={id} className="font-semibold text-ink">
         {title}
       </h2>
-      <div className="mt-2 grid gap-3 text-sm text-[var(--muted)]">{children}</div>
+      <div className="mt-2 grid gap-3 text-sm text-muted">{children}</div>
     </section>
   )
 }
@@ -179,12 +179,12 @@ export function SavesView({ store, sequencer, kit, setKit, onPrivacy, now = Date
       </Section>
 
       {message && (
-        <p role="status" className="mt-4 text-sm text-[var(--ink)]">
+        <p role="status" className="mt-4 text-sm text-ink">
           {message}
         </p>
       )}
       {error && (
-        <p role="alert" className="mt-4 text-sm font-medium text-[var(--danger)]">
+        <p role="alert" className="mt-4 text-sm font-medium text-danger">
           {error}
         </p>
       )}
@@ -257,14 +257,14 @@ export function SavesView({ store, sequencer, kit, setKit, onPrivacy, now = Date
           />
         </div>
         <p>
-          <button type="button" className="text-[var(--danger)] underline" onClick={() => setPending({ kind: 'erase' })}>
+          <button type="button" className="text-danger underline" onClick={() => setPending({ kind: 'erase' })}>
             Erase all TapBeat data on this device
           </button>
         </p>
         <p>
           Everything here stays on this device.{' '}
           {onPrivacy && (
-            <button type="button" className="text-[var(--ink)] underline" onClick={onPrivacy}>
+            <button type="button" className="text-ink underline" onClick={onPrivacy}>
               Read the privacy note
             </button>
           )}

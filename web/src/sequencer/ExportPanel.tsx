@@ -73,11 +73,11 @@ export function ExportPanel({ take, onExport, onClose }: ExportPanelProps) {
             {take ? ` (${plural(take.bars, 'bar')}, looped)` : ' (record one first)'}
           </span>
         </label>
-        <p className="text-sm text-[var(--muted)]">
+        <p className="text-sm text-muted">
           The pattern is rendered on this device as a 44.1 kHz WAV. Nothing is uploaded.
         </p>
         {error && (
-          <p role="alert" className="text-sm text-[var(--danger)]">
+          <p role="alert" className="text-sm text-danger">
             The export failed. Try a shorter length.
           </p>
         )}

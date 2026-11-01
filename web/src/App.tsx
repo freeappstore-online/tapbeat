@@ -150,22 +150,22 @@ function About() {
   return (
     <>
       <PageHeader title="About" />
-      <p className="text-[var(--muted)]">
+      <p className="text-muted">
         TapBeat is a free drum pad and beat maker: tap out rhythms on 16 pads, build loops in a step
         sequencer, and export what you make as a WAV file. Every sound is synthesised in your
         browser, so it works offline and nothing you play leaves your device. No account, no ads.
       </p>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {FEATURES.map((feature) => (
-          <li key={feature.name} className="rounded-[var(--radius)] border border-[var(--line)] p-4">
-            <p className="font-semibold text-[var(--ink)]">
+          <li key={feature.name} className="rounded-fas border border-line p-4">
+            <p className="font-semibold text-ink">
               {feature.name}
             </p>
-            <p className="text-sm text-[var(--muted)]">{feature.what}</p>
+            <p className="text-sm text-muted">{feature.what}</p>
           </li>
         ))}
       </ul>
-      <p className="mt-4 text-[var(--muted)]">
+      <p className="mt-4 text-muted">
         TapBeat is a free, MIT-licensed app on{' '}
         <a href="https://freeappstore.online" className="underline">
           FreeAppStore

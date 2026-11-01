@@ -1,4 +1,47 @@
 @import "tailwindcss";
+@source "../node_modules/@freeappstore/sdk/dist";
+
+@theme inline {
+  --color-popover: var(--popover);
+  --color-paper: var(--paper);
+  --color-paper-deep: var(--paper-deep);
+  --color-ink: var(--ink);
+  --color-ink-strong: var(--ink-strong);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-panel: var(--panel);
+  --color-panel-strong: var(--panel-strong);
+  --color-panel-quiet: var(--panel-quiet);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-deep: var(--accent-deep);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-accent-hover: var(--accent-hover);
+  --color-sky: var(--sky);
+  --color-sky-soft: var(--sky-soft);
+  --color-sky-deep: var(--sky-deep);
+  --color-mint: var(--mint);
+  --color-mint-soft: var(--mint-soft);
+  --color-mint-deep: var(--mint-deep);
+  --radius-fas: var(--radius);
+  --radius-fas-sm: var(--radius-sm);
+  --shadow-fas: var(--shadow);
+  --color-on-accent: var(--on-accent);
+  --color-bg-start: var(--bg-start);
+  --color-bg-mid: var(--bg-mid);
+  --color-bg-end: var(--bg-end);
+  --color-glow-warm: var(--glow-warm);
+  --color-glow-cool: var(--glow-cool);
+  --color-bg-blob-1: var(--bg-blob-1);
+  --color-bg-blob-2: var(--bg-blob-2);
+  --color-danger-soft: var(--danger-soft);
+  --color-success-soft: var(--success-soft);
+  --color-warning-soft: var(--warning-soft);
+  --color-scrim: var(--scrim);
+}
 
 /* Brand fonts, self-hosted from @fontsource-variable so the app makes no
    third-party requests (latin + latin-ext subsets). */
@@ -49,9 +92,9 @@
   --muted: #666666;
   --line: rgba(0, 0, 0, 0.08);
   --line-strong: rgba(0, 0, 0, 0.14);
-  --panel: rgba(255, 255, 255, 0.72);
-  --panel-strong: rgba(255, 255, 255, 0.88);
-  --panel-quiet: rgba(255, 255, 255, 0.6);
+  --panel: rgb(255, 255, 255);
+  --panel-strong: rgb(255, 255, 255);
+  --panel-quiet: rgb(255, 255, 255);
   --accent: #d86f4d;
   --accent-soft: #ffd4bf;
   --accent-deep: #9f4427;
@@ -88,6 +131,11 @@
   --radius: 0.75rem;
   --radius-sm: 0.5rem;
   --shadow: var(--shadow-card);
+  --popover: var(--paper);
+  --danger-soft: #fef2f2;
+  --success-soft: #f0fdf4;
+  --warning-soft: #fefce8;
+  --scrim: rgba(15, 23, 42, 0.5);
 }
 
 :root[data-theme='dark'] {
@@ -98,9 +146,9 @@
   --muted: #888888;
   --line: rgba(255, 255, 255, 0.08);
   --line-strong: rgba(255, 255, 255, 0.14);
-  --panel: rgba(18, 18, 18, 0.8);
-  --panel-strong: rgba(18, 18, 18, 0.92);
-  --panel-quiet: rgba(22, 22, 22, 0.8);
+  --panel: rgb(18, 18, 18);
+  --panel-strong: rgb(18, 18, 18);
+  --panel-quiet: rgb(22, 22, 22);
   --accent: #ff9b76;
   --accent-soft: #3b2119;
   --accent-deep: #ffd9cb;
@@ -129,6 +177,11 @@
   --bg-blob-2: rgba(137, 203, 229, 0.05);
   --shadow-soft: 0 28px 70px rgba(0, 0, 0, 0.6);
   --shadow-card: 0 12px 28px rgba(0, 0, 0, 0.4);
+  --popover: var(--paper);
+  --danger-soft: #450a0a;
+  --success-soft: #052e16;
+  --warning-soft: #422006;
+  --scrim: rgba(0, 0, 0, 0.65);
 }
 
 html {
@@ -234,10 +287,50 @@ a:focus-visible {
 } /* end @layer base */
 
 /* Shell's text-size preference scales rem-based app typography. */
-:root[data-text='lg'] { font-size: 112.5%; }
-:root[data-text='sm'] { font-size: 87.5%; }
 
 /* ---- Pads ---- */
+
+/* The grid fills the width and stays square, until the screen is too short:
+   then max-height wins over the aspect ratio and the pads go wide instead,
+   so the whole grid always fits (portrait and landscape). useFitTop measures
+   --fit-top (where the grid starts); --fit-bottom is the screen's padding. */
+
+/* The flash is the feedback; the global press-scale would lag behind it. */
+
+/* Reduced motion: no scale or fade, just a colour change while lit. */
+
+/* Key hints only where there is a keyboard. */
+
+/* Short screens (landscape phones, small phones): the title is visually
+   hidden but still the page heading and Shell's focus target. clip-path alone
+   hides it; no overflow:hidden, which reads as clipping. */
+
+/* Landscape phones: every pixel of height goes to the pads. */
+
+/* ---- Sequencer ---- */
+
+/* Waiting for the bar line. */
+
+/* Tracks over steps in portrait, side by side when wide. useFitTop measures
+   --fit-top so the two grids share exactly the height left. */
+
+/* The first step of each beat, so the four rows read as beats. */
+
+/* ---- Record & export ---- */
+
+/* Landscape phones: kits and the jam controls share one row. */
+
+/* Narrow phones: tempo and swing share a row, labelled by their readouts. */
+
+/* ---- Saves ---- */
+
+/* The SDK navbar (logo, menu, A, theme, Sign in) is 3px wider than a 320px
+   screen, and its styles are inline, hence !important. Trims its side
+   padding on the narrowest phones only; remove once the SDK fits 320px. */
+
+@layer components{
+:root[data-text='lg'] { font-size: 112.5%; }
+:root[data-text='sm'] { font-size: 87.5%; }
 
 .kit-picker {
   display: flex;
@@ -262,11 +355,6 @@ a:focus-visible {
   background: var(--accent-soft);
   color: var(--ink);
 }
-
-/* The grid fills the width and stays square, until the screen is too short:
-   then max-height wins over the aspect ratio and the pads go wide instead,
-   so the whole grid always fits (portrait and landscape). useFitTop measures
-   --fit-top (where the grid starts); --fit-bottom is the screen's padding. */
 .pad-grid {
   --fit-bottom: 1rem;
   display: grid;
@@ -309,8 +397,6 @@ a:focus-visible {
 .pad[data-group='hat'] { --pad-tone: var(--sky); }
 .pad[data-group='perc'] { --pad-tone: var(--mint); }
 .pad[data-group='tone'] { --pad-tone: var(--warning); }
-
-/* The flash is the feedback; the global press-scale would lag behind it. */
 .pad:active { transform: none; }
 
 .pad-key {
@@ -332,8 +418,6 @@ a:focus-visible {
     transform: scale(0.96);
   }
 }
-
-/* Reduced motion: no scale or fade, just a colour change while lit. */
 @media (prefers-reduced-motion: reduce) {
   .pad-hit {
     animation: none;
@@ -345,15 +429,9 @@ a:focus-visible {
 @media (min-width: 640px) {
   .pad-grid { --fit-bottom: 2rem; }
 }
-
-/* Key hints only where there is a keyboard. */
 @media (hover: none) {
   .pad-key { display: none; }
 }
-
-/* Short screens (landscape phones, small phones): the title is visually
-   hidden but still the page heading and Shell's focus target. clip-path alone
-   hides it; no overflow:hidden, which reads as clipping. */
 @media (max-height: 640px) {
   .screen-title {
     position: absolute;
@@ -363,8 +441,6 @@ a:focus-visible {
     white-space: nowrap;
   }
 }
-
-/* Landscape phones: every pixel of height goes to the pads. */
 @media (max-height: 500px) {
   .screen {
     padding-top: 0.5rem;
@@ -376,8 +452,6 @@ a:focus-visible {
   .kit-picker { margin-bottom: 0.5rem; }
   .kit-picker button { min-height: 2.25rem; }
 }
-
-/* ---- Sequencer ---- */
 
 .seq-transport {
   display: flex;
@@ -425,8 +499,6 @@ a:focus-visible {
   border-color: var(--accent);
   background: var(--accent-soft);
 }
-
-/* Waiting for the bar line. */
 .seq-patterns button[data-queued] {
   border-style: dashed;
   border-color: var(--accent);
@@ -452,9 +524,6 @@ a:focus-visible {
   color: var(--ink);
   font-variant-numeric: tabular-nums;
 }
-
-/* Tracks over steps in portrait, side by side when wide. useFitTop measures
-   --fit-top so the two grids share exactly the height left. */
 .seq-body {
   --fit-bottom: 1rem;
   display: grid;
@@ -575,8 +644,6 @@ a:focus-visible {
   font-size: 0.75rem;
   font-variant-numeric: tabular-nums;
 }
-
-/* The first step of each beat, so the four rows read as beats. */
 .seq-step[data-downbeat] { border-color: color-mix(in srgb, var(--ink) 30%, transparent); }
 
 .seq-step[aria-pressed='true'] {
@@ -602,8 +669,6 @@ a:focus-visible {
   .seq-slider input { min-width: 2.5rem; }
   .seq-slider output { min-width: 0; white-space: nowrap; }
 }
-
-/* ---- Record & export ---- */
 
 .jam-bar {
   display: flex;
@@ -734,8 +799,6 @@ a:focus-visible {
 }
 
 .export-actions .export-go:disabled { opacity: 0.6; }
-
-/* Landscape phones: kits and the jam controls share one row. */
 @media (max-height: 500px) {
   .pads-controls {
     display: flex;
@@ -750,8 +813,6 @@ a:focus-visible {
   .jam-bar button { min-height: 2.25rem; }
   .seq-record { padding: 0 0.625rem; }
 }
-
-/* Narrow phones: tempo and swing share a row, labelled by their readouts. */
 @media (max-width: 400px) {
   .seq-transport { gap: 0.375rem; }
   .seq-slider { flex: 1 1 0; min-width: 0; gap: 0.25rem; font-size: 0.75rem; }
@@ -759,8 +820,6 @@ a:focus-visible {
   .seq-slider input { min-width: 2.5rem; }
   .seq-slider output { min-width: 0; white-space: nowrap; }
 }
-
-/* ---- Saves ---- */
 
 .save-form {
   display: flex;
@@ -822,13 +881,10 @@ a:focus-visible {
 }
 
 .saved-item button { padding: 0 0.875rem; }
-
-/* The SDK navbar (logo, menu, A, theme, Sign in) is 3px wider than a 320px
-   screen, and its styles are inline, hence !important. Trims its side
-   padding on the narrowest phones only; remove once the SDK fits 320px. */
 @media (max-width: 340px) {
   #root header {
     padding-left: 0.625rem !important;
     padding-right: 0.625rem !important;
   }
+}
 }
