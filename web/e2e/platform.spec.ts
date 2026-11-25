@@ -22,9 +22,9 @@ test.describe('themes', () => {
       const errors: string[] = []
       page.on('pageerror', (e) => errors.push(e.message))
       await app.open('/')
-      // The SDK toggle cycles system → light → dark; pick the theme explicitly.
-      const toggle = page.getByRole('button', { name: /^Theme:/ })
-      while ((await toggle.getAttribute('aria-label')) !== `Theme: ${theme}`) await toggle.click()
+      // SDK 0.17: pick the theme explicitly on the built-in Profile page (header avatar).
+      await page.getByRole('link', { name: 'Profile', exact: true }).click()
+      await page.getByRole('button', { name: theme === 'dark' ? 'Dark' : 'Light', exact: true }).click()
       if (theme === 'dark') await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark')
       else await expect(page.locator('html')).not.toHaveAttribute('data-theme', 'dark')
 
